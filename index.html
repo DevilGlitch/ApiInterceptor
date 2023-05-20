@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Example</title>
+</head>
+<body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+  <script>
+    // Function to remove @everyone and @here mentions from a string
+    function removeMentions(str) {
+      return str.replace(/@everyone|@here/gi, '');
+    }
+    
+    // Handle the API request
+    function handleAPIRequest(requestData) {
+      const { avatar_url, username, content, apiInterL } = requestData;
+
+      // Process the content and strip words
+      const strippedContent = removeMentions(content.replace(/word1|word2|word3/gi, ''));
+      const strippedUsername = removeMentions(username);
+
+      // Construct the data to be stored in JSON
+      const data = {
+        avatar_url,
+        username: strippedUsername,
+        content: strippedContent,
+        apiInterL
+      };
+
+      // Store the data in a JSON file
+      const jsonData = JSON.parse(localStorage.getItem('data')) || [];
+      jsonData.push(data);
+      localStorage.setItem('data', JSON.stringify(jsonData));
+      console.log('Data stored in localStorage');
+
+      // Send the processed data to a Discord webhook based on apiInterL value
+      let webhookURL = '';
+
+      switch (apiInterL) {
+        case 1:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_1';
+          break;
+        case 2:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_2';
+          break;
+        case 3:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_3';
+          break;
+        case 4:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_4';
+          break;
+        case 5:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_5';
+          break;
+        case 6:
+          webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_6';
+          break;
+        default:
+          webhookURL = 'YOUR_DEFAULT_DISCORD_WEBHOOK_URL';
+      }
+
+      const webhookData = {
+        embeds: [
+          {
+            author: {
+              name: strippedUsername,
+              icon_url: avatar_url
+            },
+            description: strippedContent
+          }
+        ]
+      };
+
+      axios.post(webhookURL, webhookData)
+        .then(() => {
+          console.log('API request processed and sent to Discord webhook');
+        })
+        .catch((error) => {
+          console.error('Error sending data to Discord webhook:', error);
+        });
+    }
+
+    // Handle the form submission
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const requestData = Object.fromEntries(formData.entries());
+
+      handleAPIRequest(requestData);
+    }
+  </script>
+
+  <h1>API Example</h1>
+
+  <form onsubmit="handleSubmit(event)">
+    <label for="avatar_url">Avatar URL:</label>
+    <input type="text" name="avatar_url" id="avatar_url" required><br>
+
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required><br>
+
+    <label for="content">Content:</label>
+    <input type="text" name="content" id="content" required><br>
+
+    <label for="apiInterL">API InterL:</label>
+    <input type="number" name="apiInterL" id="apiInterL" required><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
