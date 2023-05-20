@@ -97,7 +97,7 @@ app.post('/api', (req, res) => {
 });
 
 // Start the server
-const port = 3000;
+const port = 1251;
 app.listen(port, () => {
 	console.log(`API server running on port ${port}`);
 });
