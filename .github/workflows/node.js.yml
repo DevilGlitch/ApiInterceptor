@@ -25,4 +25,4 @@ jobs:
         run: npm install axios fs express body-parser
 
       - name: Run API script
-        run: nodeApiServer.js
+        run: node nodeApiServer.js
